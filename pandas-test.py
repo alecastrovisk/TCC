@@ -20,17 +20,19 @@ for i in range(0, max):
     for j in range(i+1, max):
         def1 = definitions[i]
         def2 = definitions[j]
-        # result = get_similarity_score(def1, def2)
-        result = (round(random.random(), 2), 'yes')
-        mat[i][j] = result[0]
-        print(mat)
+        result = get_similarity_score(def1, def2)
+        mat[i][j] = result
 
+print("mat:", mat)
 df_mat = pd.DataFrame(mat)
 
 cmap = plt.cm.hot_r
 
 plt.figure(figsize=(10, 8))
-plt.imshow(df_mat, cmap=cmap, interpolation='nearest', vmin=0, vmax=1)
+plt.imshow(df_mat, cmap=cmap, interpolation='nearest', vmin=0, vmax=100)
+
+plt.xticks(np.arange(0, max, 1))
+plt.yticks(np.arange(0, max, 1))
 plt.colorbar(label='Similarity Score')
 plt.title('Heatmap of Similarity Scores')
 plt.xlabel('Definitions')

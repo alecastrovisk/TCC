@@ -18,10 +18,13 @@ def get_similarity_score(definition1, definition2):
 
     req = requests.post(link, headers=headers, data=body)
 
-    print(req.text)
+    # print(req.text)
 
     response = req.json()
-    return response['choices'][0]['message']['content']
+    score_str = response['choices'][0]['message']['content']
+    score = int(score_str.split(',')[0].split(':')[1].strip())
+    print("🚀 ~ score:", score)
+    return score
 
 
 # result = get_similarity_score(definition1, definition2)
