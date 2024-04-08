@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 df = pd.read_csv('samples/tests_smells.csv')
 
 max = len(df)
-max = 4
+# max = 36
 
 definitions = list(df['Definition'])
 
@@ -23,8 +23,11 @@ for i in range(0, max):
         result = get_similarity_score(def1, def2)
         mat[i][j] = result
 
-print("mat:", mat)
 df_mat = pd.DataFrame(mat)
+
+# Salvar a matriz em um arquivo CSV
+df_mat.to_csv('matriz_similaridade.csv', index=False)
+
 
 cmap = plt.cm.hot_r
 

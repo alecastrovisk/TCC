@@ -1,4 +1,4 @@
-from password import API_KEY
+from env import API_KEY
 import requests
 import json
 
@@ -22,8 +22,13 @@ def get_similarity_score(definition1, definition2):
 
     response = req.json()
     score_str = response['choices'][0]['message']['content']
-    score = int(score_str.split(',')[0].split(':')[1].strip())
-    print("🚀 ~ score:", score)
+    print("🚀 ~ score:", score_str)
+    try:
+        score = int(score_str.split(',')[0].split(':')[1].strip())
+        
+    except ValueError:
+        score = 0  
+    print("🚀 ~ score:", score_str)
     return score
 
 
