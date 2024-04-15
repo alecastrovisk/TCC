@@ -1,5 +1,6 @@
 from env import API_KEY
 import requests
+import time
 
 count = 0
 
@@ -10,7 +11,7 @@ def get_similarity_score(definition1, definition2):
     link = 'https://api.openai.com/v1/chat/completions'
     model_id = 'gpt-3.5-turbo'
 
-    score_str = ''
+    score_str = ''  # Inicialize a variável score_str com uma string vazia
 
     prompt = f"Classifique o nível de similaridade entre estes textos de 0-100 e se eles definem a mesma coisa(responda com o padrão  de output: [score: 100, 'sim']):\n\nTexto 1: {definition1}\n\nTexto 2: {definition2}"
 
@@ -21,7 +22,14 @@ def get_similarity_score(definition1, definition2):
 
     try:
         response = requests.post(link, headers=headers, json=body)
-        response.raise_for_status()  # Raise an exception for bad status codes
+        if response.status_code == 429:
+
+            print("Too many requests. Waiting and retrying...")
+            time.sleep(60)
+            response = requests.post(link, headers=headers, json=body)
+        
+        response.raise_for_status()  # Raise an exception for other bad status codes
+
         response_json = response.json()
         score_str = response_json['choices'][0]['message']['content']
         if 'score' in score_str:
