@@ -11,7 +11,7 @@ def get_similarity_score(definition1, definition2):
     link = 'https://api.openai.com/v1/chat/completions'
     model_id = 'gpt-3.5-turbo'
 
-    score_str = ''  # Inicialize a variável score_str com uma string vazia
+    score_str = ''
 
     prompt = f"Classifique o nível de similaridade entre estes textos de 0-100 e se eles definem a mesma coisa(responda com o padrão  de output: [score: 100, 'sim']):\n\nTexto 1: {definition1}\n\nTexto 2: {definition2}"
 
@@ -20,34 +20,53 @@ def get_similarity_score(definition1, definition2):
         "messages": [{"role": "user", "content": f"{prompt}"}]
     }
 
-    try:
-        response = requests.post(link, headers=headers, json=body)
-        if response.status_code == 429:
+    retries = 0
+    max_retries = 5
+    wait_time = 1
 
-            print("Too many requests. Waiting and retrying...")
-            time.sleep(60)
+    while retries < max_retries:
+        try:
             response = requests.post(link, headers=headers, json=body)
-        
-        response.raise_for_status()  # Raise an exception for other bad status codes
+            if response.status_code == 429:
+                print(f"Too many requests. Waiting {wait_time} seconds and retrying...")
+                time.sleep(wait_time)
+                retries += 1
+                wait_time *= 2
+                continue
+            
+            response.raise_for_status()
 
-        response_json = response.json()
-        score_str = response_json['choices'][0]['message']['content']
-        if 'score' in score_str:
-            score = int(score_str.split(',')[0].split(':')[1].strip())
-            count += 1
-        else:
-            print(f"🚀 ~ score: {score_str}")
-            score = 0
-    except requests.exceptions.RequestException as e:
-        print(f"Error making request: {e}")
-        score = 0
-    except KeyError as e:
-        print(f"Error processing response: {e}")
-        score = 0
-    except ValueError as e:
-        print(f"Error converting score to int: {e}")
-        score = 0
+            response_json = response.json()
 
-    print(f"score: {score}, \nresponse: {score_str}, \ncount: {count}")
+            if 'choices' in response_json and len(response_json['choices']) > 0 and 'message' in response_json['choices'][0] and 'content' in response_json['choices'][0]['message']:
+                score_str = response_json['choices'][0]['message']['content']
+                
+                if 'score' in score_str:
+                    try:
+                        score = float(score_str.split(',')[0].split(':')[1].strip())
+                        count += 1
+                    except (IndexError, ValueError):
+                        print("Error parsing score_str. Check the format.")
+                        score = -1
+                else:
+                    print(f"🚀 ~ score: {score_str}")
+                    score = -1
+            else:
+                print("Unexpected response format.")
+                score = -1
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error making request: {e}")
+            score = -1
+        except KeyError as e:
+            print(f"Error processing response: {e}")
+            score = -1
+        except ValueError as e:
+            print(f"Error converting score to float: {e}")
+            score = -1
+
+        print(f"score: {score}, \nresponse: {score_str}, \ncount: {count}")
+        if score != -1:
+            break
 
     return score
