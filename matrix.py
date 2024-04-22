@@ -7,7 +7,6 @@ import os
 # Carregar o dataframe
 df = pd.read_csv('samples/tests_smells.csv')
 max = len(df)
-max = 16
 print('Tamanho do dataframe:', max)
 
 # Verificar se o arquivo de progresso e a matriz existem
@@ -28,11 +27,8 @@ else:
 definitions = list(df['Definition'])
 
 for i in range(last_i, max):
-    start_j = last_j if i == last_i else 0  # Começar de last_j se estamos no mesmo i
+    start_j = last_j if i == last_i else i + 1  # Começar de i + 1 para evitar comparações repetidas
     for j in range(start_j, max):
-        if i == j:
-            continue  # Pular a comparação se i é igual a j
-
         def1 = definitions[i]
         def2 = definitions[j]
         result = get_similarity_score(def1, def2)
