@@ -1,5 +1,5 @@
 import pandas as pd
-from gpt import get_similarity_score
+from old.gpt import get_similarity_score
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -18,6 +18,7 @@ for i in range(n):
     for j in range(i+1, n):
         similarity = get_similarity_score(definitions[i], definitions[j])
         similarity_matrix[i, j] = similarity
+        similarity_matrix[j, i] = similarity #Caso queira a matriz simétrica
 
 pd.DataFrame(similarity_matrix).to_csv('sample_similarity_matrix.csv', index=False)
 

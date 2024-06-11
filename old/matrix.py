@@ -1,5 +1,5 @@
 import pandas as pd
-from gpt import get_similarity_score
+from old.gpt import get_similarity_score
 import numpy as np
 import matplotlib.pyplot as plt
 import os
