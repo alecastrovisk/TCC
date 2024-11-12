@@ -72,10 +72,11 @@ def calculate_similarity_matrix_gpt(definitions):
     similarity_matrix = np.zeros((n, n))
     print("Calculating similarity matrix using GPT...")
     for i in range(n):
+        similarity_matrix[i, i] = 100.0
         for j in range(i + 1, n):
             print(f"Processing definitions {i + 1} and {j + 1}...")
             similarity = get_similarity_score_gpt(definitions[i], definitions[j])
             similarity_matrix[i, j] = similarity
-            # similarity_matrix[j, i] = similarity  # Matriz simétrica
+            similarity_matrix[j, i] = similarity  # Matriz simétrica
     print("Similarity matrix calculation using GPT complete.")
     return similarity_matrix

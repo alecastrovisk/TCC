@@ -29,7 +29,7 @@ def plot_heatmap(matrix, title, definitions, min_value, max_value, cmap=plt.cm.h
     Plota um heatmap para uma matriz de similaridade.
     """
     plt.figure(figsize=(10, 8))
-    plt.imshow(matrix, cmap=cmap, interpolation='', vmin=min_value, vmax=max_value)
+    plt.imshow(matrix, cmap=cmap, interpolation='nearest', vmin=min_value, vmax=max_value)
     plt.xticks(np.arange(0, len(definitions), 1))
     plt.yticks(np.arange(0, len(definitions), 1))
     plt.colorbar(label='Similarity Score')
@@ -37,6 +37,7 @@ def plot_heatmap(matrix, title, definitions, min_value, max_value, cmap=plt.cm.h
     plt.xlabel('Definitions')
     plt.ylabel('Definitions')
     plt.show()
+
 def main():
     # Parâmetros
     original_csv = 'samples/tests_smells.csv'
