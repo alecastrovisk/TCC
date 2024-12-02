@@ -77,6 +77,6 @@ def calculate_similarity_matrix_gpt(definitions):
             print(f"Processing definitions {i + 1} and {j + 1}...")
             similarity = get_similarity_score_gpt(definitions[i], definitions[j])
             similarity_matrix[i, j] = similarity
-            similarity_matrix[j, i] = similarity  # Matriz simétrica
+            similarity_matrix[j, i] = similarity
     print("Similarity matrix calculation using GPT complete.")
     return similarity_matrix
